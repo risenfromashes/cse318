@@ -46,11 +46,6 @@ public:
     return b1.nums_ <=> b2.nums_;
   }
 
-  static bool x(){
-    Board b1(3), b2(3);
-    return b1 == b2;
-  }
-
   /* return the position of the blank square */
   Position blank_pos() { return blank_pos_; }
 
