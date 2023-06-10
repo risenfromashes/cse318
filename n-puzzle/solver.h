@@ -2,15 +2,13 @@
 
 #include <list>
 
-
-
 class Node {
 public:
   Node(Board board, Node *prev = nullptr);
 
   /* getters */
-  const Board& board() const { return board_; }
-  Board& board() { return board_; }
+  const Board &board() const { return board_; }
+  Board &board() { return board_; }
 
   Node *prev() const { return prev_; }
   int depth() const { return depth_; }
@@ -21,9 +19,9 @@ private:
   int depth_;
 };
 
-enum class Heuristic {
-  HAMMING, MANHATTAN
-};
+enum class Heuristic { HAMMING, MANHATTAN };
 
 /* returns the steps to solve the board, if solvable, null otherwise */
-std::optional<std::list<Board>> solve(Board start, Board target, Heuristic h);
+std::optional<std::list<Board>> solve(Board start, Board target,
+                                      Heuristic h = Heuristic::MANHATTAN,
+                                      int *nodes_visited = nullptr);

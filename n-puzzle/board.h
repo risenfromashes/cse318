@@ -1,6 +1,7 @@
 #include <cmath>
 #include <optional>
 #include <vector>
+#include <iostream>
 
 struct Position {
   int x, y;
@@ -19,7 +20,10 @@ public:
   /* default state of board */
   Board(int n);
   /* set board config manually */
+  Board(int n, std::vector<int> nums);
   Board(int n, std::vector<int> nums, Position blank_pos);
+
+  static Board solved(int n);
 
   /* counts inversions of permutation in row major order */
   int count_inversion();
@@ -34,10 +38,24 @@ public:
   int manhattan_dist(Board b2) const;
 
   /* test equality */
-  friend bool operator==(Board b1, Board b2);
+  friend bool operator==(const Board& b1, const Board& b2) {
+    return b1.nums_ == b2.nums_;
+  }
+
+  friend auto operator<=>(const Board& b1, const Board& b2) {
+    return b1.nums_ <=> b2.nums_;
+  }
+
+  static bool x(){
+    Board b1(3), b2(3);
+    return b1 == b2;
+  }
 
   /* return the position of the blank square */
   Position blank_pos() { return blank_pos_; }
+
+  /* print to file */
+  void print(std::ostream& os = std::cout);
 
   const int N;
 

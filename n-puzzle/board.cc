@@ -2,15 +2,34 @@
 
 #include <cassert>
 
-Board::Board(int n) : N(n) {
+Board::Board(int n) : N(n), nums_(N * N) {
   for (int i = 0; i < N * N; i++) {
     nums_[i] = i;
   }
+  blank_pos_ = {.x = 0, .y = 0};
 }
 
 Board::Board(int n, std::vector<int> nums, Position blank_pos)
     : N(n), nums_(nums), blank_pos_(blank_pos) {
-  assert(nums.size() == n*n);
+  assert(nums.size() == n * n);
+}
+
+Board::Board(int n, std::vector<int> nums) : N(n), nums_(nums) {
+  assert(nums.size() == n * n);
+  for (int i = 0; i < n * n; i++) {
+    if (nums_[i] == 0) {
+      blank_pos_ = {.x = i % n, .y = i / n};
+      break;
+    }
+  }
+}
+
+Board Board::solved(int n) {
+  std::vector<int> nums(n * n);
+  for (int i = 0; i < n * n; i++) {
+    nums[i] = (i + 1) % (n * n);
+  }
+  return Board(n, std::move(nums), {.x = n - 1, .y = n - 1});
 }
 
 std::optional<Board> Board::make_move(Move move) {
@@ -49,7 +68,7 @@ std::optional<Board> Board::make_move(Move move) {
   auto new_nums = nums_;
   std::swap(new_nums[old_idx], new_nums[new_idx]);
 
-  return Board(N, new_nums, new_pos);
+  return Board(N, std::move(new_nums), new_pos);
 }
 
 int Board::hamming_dist(Board b2) const {
@@ -72,7 +91,7 @@ int Board::manhattan_dist(Board b2) const {
 
   int d = 0;
 
-  std::vector<Position>  pos1(N*N), pos2(N*N);
+  std::vector<Position> pos1(N * N), pos2(N * N);
 
   for (int i = 0; i < N * N; i++) {
     pos1[nums_[i]] = Position{.x = i % N, .y = i / N};
@@ -86,16 +105,6 @@ int Board::manhattan_dist(Board b2) const {
   return d;
 }
 
-bool operator==(Board b1, Board b2) {
-  assert(b1.N == b2.N);
-
-  for (int i = 0; i < b1.N * b1.N; i++) {
-    if (b1.nums_[i] != b2.nums_[i]) {
-      return false;
-    }
-  }
-  return true;
-}
 
 int Board::count_inversion() {
   int inv = 0;
@@ -111,4 +120,13 @@ int Board::count_inversion() {
   }
 
   return inv;
+}
+
+void Board::print(std::ostream &os) {
+  for (int i = 0; i < N; i++) {
+    for (int j = 0; j < N; j++) {
+      os << nums_[i * N + j] << ' ';
+    }
+    os << std::endl;
+  }
 }
