@@ -35,8 +35,8 @@ int main(int argc, char **argv) {
   Board start = Board(n, std::move(nums));
   Board end = Board::solved(n);
 
-  int nodes_visited;
-  auto res = solve(start, end, h, &nodes_visited);
+  int explored, expanded;
+  auto res = solve(start, end, h, &explored, &expanded);
 
   if (!res) {
     std::cout << "Unsolvable puzzle" << std::endl;
@@ -49,7 +49,8 @@ int main(int argc, char **argv) {
     }
   }
 
-  if(print_stat){
-    std::cout << "(Visited " << nodes_visited << " nodes)" << std::endl;
+  if (print_stat) {
+    std::cout << "(Explored " << explored << " nodes, expanded " << expanded
+              << " nodes)" << std::endl;
   }
 }

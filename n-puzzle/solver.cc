@@ -12,9 +12,13 @@ Node::Node(Board board, Node *prev) : board_(board), prev_(prev) {
   }
 }
 
-std::optional<std::list<Board>> solve(Board start, Board target, Heuristic h, int* nodes_visited) {
+std::optional<std::list<Board>> solve(Board start, Board target, Heuristic h,
+                                      int *nodes_explored,
+                                      int *nodes_expanded) {
 
   assert(start.N == target.N);
+  int explored = 1;
+  int expanded = 0;
 
   int N = start.N;
 
@@ -66,6 +70,7 @@ std::optional<std::list<Board>> solve(Board start, Board target, Heuristic h, in
     if (auto b = top->board().make_move(move)) {
       if (!visited.contains(*b)) {
         Node *n = new Node(*b, top);
+        explored++;
         visited.insert(*b);
         nodes.push_back(n);
         queue.push(n);
@@ -82,6 +87,8 @@ std::optional<std::list<Board>> solve(Board start, Board target, Heuristic h, in
       break;
     }
 
+    expanded++;
+
     enqueue(top, Move::RIGHT);
     enqueue(top, Move::LEFT);
     enqueue(top, Move::DOWN);
@@ -95,14 +102,16 @@ std::optional<std::list<Board>> solve(Board start, Board target, Heuristic h, in
     n = n->prev();
   } while (n != nullptr);
 
-  if(nodes_visited){
-    *nodes_visited = nodes.size();
-  }
-
   for (auto &node : nodes) {
     delete node;
   }
 
+  if (nodes_explored) {
+    *nodes_explored = explored;
+  }
+  if (nodes_expanded) {
+    *nodes_expanded = expanded;
+  }
 
   return path;
 }

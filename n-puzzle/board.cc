@@ -105,7 +105,6 @@ int Board::manhattan_dist(Board b2) const {
   return d;
 }
 
-
 int Board::count_inversion() {
   int inv = 0;
 

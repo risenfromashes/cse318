@@ -24,4 +24,5 @@ enum class Heuristic { HAMMING, MANHATTAN };
 /* returns the steps to solve the board, if solvable, null otherwise */
 std::optional<std::list<Board>> solve(Board start, Board target,
                                       Heuristic h = Heuristic::MANHATTAN,
-                                      int *nodes_visited = nullptr);
+                                      int *explored_nodes = nullptr,
+                                      int *expanded_nodes = nullptr);
